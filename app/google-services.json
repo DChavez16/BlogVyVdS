@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "661216310632",
+    "project_id": "blogvyvds",
+    "storage_bucket": "blogvyvds.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:661216310632:android:1bf91bf017ef6aeb8fd2dd",
+        "android_client_info": {
+          "package_name": "com.example.blogvyvds"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "661216310632-o577v1fufcg3qvnqnti44rcr9neskclt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD6TIJyHIpOksM6fgNgc592BbfjvgN99-E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "661216310632-o577v1fufcg3qvnqnti44rcr9neskclt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
