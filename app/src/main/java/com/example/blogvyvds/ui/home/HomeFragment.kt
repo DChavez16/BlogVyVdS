@@ -8,12 +8,15 @@ import androidx.navigation.fragment.findNavController
 import com.example.blogvyvds.R
 import com.example.blogvyvds.databinding.FragmentHomeBinding
 import com.example.blogvyvds.databinding.PostItemBinding
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import kotlin.random.Random.Default.nextBoolean
 
 
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
+    private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -24,21 +27,15 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
     }
 
     private fun loginVerification() {
-        val logged = nextBoolean()
-
-        Toast.makeText(
-            requireContext(),
-            "Usuario ${if(logged) "conectado" else "no conectado"}",
-            Toast.LENGTH_SHORT
-        ).show()
-
-        if(!logged) {
+        if(firebaseAuth.currentUser == null) {
             findNavController().navigate(R.id.action_homeFragment_to_login_navigation)
         }
     }
 
     private fun setButtonListener() {
         binding.btnCerrarSesion.setOnClickListener {
+            firebaseAuth.signOut()
+
             findNavController().navigate(R.id.action_homeFragment_to_login_navigation)
         }
 
