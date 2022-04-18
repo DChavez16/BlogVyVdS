@@ -7,9 +7,7 @@ import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.blogvyvds.R
-import com.example.blogvyvds.core.Result
-import com.example.blogvyvds.core.hide
-import com.example.blogvyvds.core.show
+import com.example.blogvyvds.core.*
 import com.example.blogvyvds.data.remote.auth.AuthDataSource
 import com.example.blogvyvds.databinding.FragmentLoginBinding
 import com.example.blogvyvds.domain.auth.AuthRepoImpl
@@ -69,14 +67,20 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             when(result) {
                 is Result.Loading -> {
                     binding.progressBar.show()
+                    binding.btnIniciarSesion.disable()
                     binding.btnIniciarSesion.isEnabled = false
                 }
                 is Result.Success -> {
                     binding.progressBar.hide()
+                    binding.btnIniciarSesion.enable()
+
+                    // TODO: Obtener los datos del usuario desde el servidor y almacenarlos localmente
+
                     findNavController().navigate(R.id.action_loginFragment_to_main_navigation)
                 }
                 is Result.Failure -> {
                     binding.progressBar.hide()
+                    binding.btnIniciarSesion.enable()
                     Toast.makeText(
                         requireContext(),
                         "Error ${result.exception}",

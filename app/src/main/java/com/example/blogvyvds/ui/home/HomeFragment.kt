@@ -24,6 +24,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
 
         loginVerification()
         setButtonListener()
+
+        // TODO: Mostrar las publicaciones actuales
     }
 
     private fun loginVerification() {
@@ -42,5 +44,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.btnCrearPublicacion.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_createPostFragment)
         }
+
+        // TODO: Opcion para cambiar la imagen del usuario
     }
 }

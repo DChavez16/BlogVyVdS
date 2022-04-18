@@ -13,3 +13,11 @@ fun View.hide() {
 fun View.isVisible(): Boolean {
     return this.visibility == View.VISIBLE
 }
+
+fun View.enable() {
+    this.isEnabled = true
+}
+
+fun View.disable() {
+    this.isEnabled = false
+}

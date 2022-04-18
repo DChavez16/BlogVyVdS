@@ -6,10 +6,8 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import com.example.blogvyvds.core.Result
 import com.example.blogvyvds.R
-import com.example.blogvyvds.core.hide
-import com.example.blogvyvds.core.show
+import com.example.blogvyvds.core.*
 import com.example.blogvyvds.data.remote.auth.AuthDataSource
 import com.example.blogvyvds.databinding.FragmentRegisterBinding
 import com.example.blogvyvds.domain.auth.AuthRepoImpl
@@ -79,15 +77,19 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
             when(result) {
                 is Result.Loading -> {
                     binding.progressBar.show()
-                    binding.btnRegistrar.isEnabled = false
+                    binding.btnRegistrar.disable()
                 }
                 is Result.Success -> {
                     binding.progressBar.hide()
+                    binding.btnRegistrar.enable()
+
+                    // TODO: Guardar los datos introducidos localmente
+
                     findNavController().navigate(R.id.action_registerFragment_to_main_navigation)
                 }
                 is Result.Failure -> {
                     binding.progressBar.hide()
-                    binding.btnRegistrar.isEnabled = true
+                    binding.btnRegistrar.enable()
                     Toast.makeText(
                         requireContext(),
                         "Error: ${result.exception}",
