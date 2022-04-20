@@ -1,9 +1,12 @@
 package com.example.blogvyvds.data.model
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.versionedparcelable.VersionedParcelize
 
+@VersionedParcelize
 data class User (
     val email: String = "",
     val username: String = "",

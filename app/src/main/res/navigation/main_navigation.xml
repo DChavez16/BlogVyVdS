@@ -24,5 +24,11 @@
         android:id="@+id/createPostFragment"
         android:name="com.example.blogvyvds.ui.home.CreatePostFragment"
         android:label="fragment_create_post"
-        tools:layout="@layout/fragment_create_post" />
+        tools:layout="@layout/fragment_create_post" >
+        <argument android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="photo_url"
+            app:argType="string" />
+    </fragment>
 </navigation>

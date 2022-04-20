@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.blogvyvds.R
 import com.example.blogvyvds.core.*
 import com.example.blogvyvds.data.remote.post.PostDataSource
@@ -13,15 +14,18 @@ import com.example.blogvyvds.databinding.FragmentCreatePostBinding
 import com.example.blogvyvds.domain.post.PostRepoImpl
 import com.example.blogvyvds.presentation.post.PostViewModel
 import com.example.blogvyvds.presentation.post.PostViewModelFactory
+import com.google.type.Date
 import com.google.type.DateTime
+import java.time.LocalDateTime
 
 
 class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
 
     private lateinit var binding: FragmentCreatePostBinding
-    private val viewmodel by viewModels<PostViewModel> {
+    private val postviewmodel by viewModels<PostViewModel> {
         PostViewModelFactory(PostRepoImpl(PostDataSource()))
     }
+    private val args by navArgs<CreatePostFragmentArgs>()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,20 +61,18 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
     }
 
     private fun uploadPost() {
-        // TODO: Obtener el nombre e imagen del usuario desde el almacenamiento local
-        val username = "Nombre"
-        val userImg = ""
+        val username = args.username
+        val userImg = args.photoUrl
         val description = binding.txtPostDescription.text.toString()
         // TODO: Permitir subir una imagen al servidor y guardar su url
         val imageUrl = ""
         // TODO: Permitir subir un archivo al servidor y guardar su url
         val fileUrl = ""
-        // TODO: Arreglar el formato de la fecha y hora de la publicacion
-        val date = "${DateTime.DAY_FIELD_NUMBER} de ${DateTime.MONTH_FIELD_NUMBER}"
-        val time = "${DateTime.HOURS_FIELD_NUMBER}:${DateTime.MINUTES_FIELD_NUMBER}"
+        val date = "${LocalDateTime.now().dayOfMonth} - ${LocalDateTime.now().month} - ${LocalDateTime.now().year}"
+        val time = "${LocalDateTime.now().hour}:${LocalDateTime.now().minute}"
 
         if(description.isNotEmpty()) {
-            viewmodel.uploadPost(username, userImg, description, imageUrl, fileUrl, date, time)
+            postviewmodel.uploadPost(username, userImg, description, imageUrl, fileUrl, date, time)
                 .observe(viewLifecycleOwner) { result ->
                     when(result) {
                         is Result.Loading -> binding.btnPublicar.disable()

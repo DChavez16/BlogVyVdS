@@ -11,6 +11,7 @@ import com.example.blogvyvds.R
 import com.example.blogvyvds.core.Result
 import com.example.blogvyvds.data.local.AppDatabase
 import com.example.blogvyvds.data.local.user.LocalUserDataSource
+import com.example.blogvyvds.data.model.User
 import com.example.blogvyvds.data.remote.user.RemoteUserDataSource
 import com.example.blogvyvds.databinding.FragmentHomeBinding
 import com.example.blogvyvds.domain.user.UserRepositoryImpl
@@ -22,6 +23,7 @@ import com.google.firebase.auth.FirebaseAuth
 class HomeFragment : Fragment(R.layout.fragment_home) {
 
     private lateinit var binding: FragmentHomeBinding
+    private lateinit var user: User
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
     private val userviewmodel by viewModels<UserViewModel> {
         UserViewModelFactory(UserRepositoryImpl(
@@ -29,7 +31,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             RemoteUserDataSource()
         ))
     }
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -56,7 +57,12 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         }
 
         binding.btnCrearPublicacion.setOnClickListener {
-            findNavController().navigate(R.id.action_homeFragment_to_createPostFragment)
+            val action = HomeFragmentDirections.actionHomeFragmentToCreatePostFragment(
+                user.username,
+                user.photo_url
+            )
+
+            findNavController().navigate(action)
         }
 
         // TODO: Opcion para cambiar la imagen del usuario
@@ -71,7 +77,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
                 is Result.Success -> {
                     Log.d("HomeFragment", "Datos del usuario mostrados correctamente")
-                    val user = result.data
+                    user = result.data
                     binding.txtUserName.text = user.username
                 }
                 is Result.Failure -> {
