@@ -14,14 +14,15 @@ class PostViewModel(private val repo: PostRepo): ViewModel() {
         userName: String,
         userImg: String,
         description: String,
-        imageUrl: String,
-        fileUrl: String,
+        userId: String,
         date: String,
-        time: String
+        time: String,
+        imgBool: Boolean,
+        fileBool: Boolean
     ) = liveData(Dispatchers.IO) {
         emit(Result.Loading())
         try {
-            emit(repo.uploadPost(userName, userImg, description, imageUrl, fileUrl, date, time))
+            emit(repo.uploadPost(userName, userImg, description, userId, date, time, imgBool, fileBool))
         } catch (e: Exception) {
             emit(Result.Failure(e))
         }

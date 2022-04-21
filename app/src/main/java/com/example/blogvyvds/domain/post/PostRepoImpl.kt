@@ -10,11 +10,12 @@ class PostRepoImpl(private val dataSource: PostDataSource): PostRepo {
         userName: String,
         userImg: String,
         description: String,
-        imageUrl: String,
-        fileUrl: String,
+        userId: String,
         date: String,
-        time: String
-    ): Result<Task<Void>> =
-        dataSource.uploadPost(userName, userImg, description, imageUrl, fileUrl, date, time)
+        time: String,
+        imgBool: Boolean,
+        fileBool: Boolean
+    ): Result<String> =
+        dataSource.uploadPost(userName, userImg, description, userId, date, time, imgBool, fileBool)
 
 }

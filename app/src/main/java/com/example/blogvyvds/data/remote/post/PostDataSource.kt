@@ -1,9 +1,7 @@
 package com.example.blogvyvds.data.remote.post
 
-import android.util.Log
 import com.example.blogvyvds.core.Result
 import com.example.blogvyvds.data.model.Post
-import com.google.android.gms.tasks.Task
 import com.google.firebase.database.FirebaseDatabase
 
 class PostDataSource {
@@ -12,12 +10,16 @@ class PostDataSource {
         userName: String,
         userImg: String,
         description: String,
-        imageUrl: String,
-        fileUrl: String,
+        userId: String,
         date: String,
-        time: String
-    ) : Result<Task<Void>> {
+        time: String,
+        imgBool: Boolean,
+        fileBool: Boolean
+    ) : Result<String> {
         val id = FirebaseDatabase.getInstance().reference.child("Post").push().key ?: ""
+
+        val imageUrl = if(imgBool) getImageUrl(userId) else ""
+        val fileUrl = if(fileBool) getFileUrl(userId) else ""
 
         val postResult = FirebaseDatabase
                 .getInstance()
@@ -25,6 +27,14 @@ class PostDataSource {
                 .child(id)
                 .setValue(Post(id, userName, userImg, description, imageUrl, fileUrl, date, time))
 
-        return Result.Success(postResult)
+        return Result.Success(id)
+    }
+
+    private fun getImageUrl(userId: String): String {
+        return ""
+    }
+
+    private fun getFileUrl(userId: String): String {
+        return ""
     }
 }

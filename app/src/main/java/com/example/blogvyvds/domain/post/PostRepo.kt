@@ -8,9 +8,10 @@ interface PostRepo {
         userName: String,
         userImg: String,
         description: String,
-        imageUrl: String,
-        fileUrl: String,
+        userId: String,
         date: String,
-        time: String
-    ): Result<Task<Void>>
+        time: String,
+        imgBool: Boolean,
+        fileBool: Boolean
+    ): Result<String>
 }

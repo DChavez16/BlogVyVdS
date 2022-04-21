@@ -14,6 +14,7 @@ import com.example.blogvyvds.databinding.FragmentCreatePostBinding
 import com.example.blogvyvds.domain.post.PostRepoImpl
 import com.example.blogvyvds.presentation.post.PostViewModel
 import com.example.blogvyvds.presentation.post.PostViewModelFactory
+import com.google.firebase.auth.FirebaseAuth
 import com.google.type.Date
 import com.google.type.DateTime
 import java.time.LocalDateTime
@@ -56,40 +57,22 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
         }
 
         binding.btnPublicar.setOnClickListener {
-            uploadPost()
+            getintroducedData()
         }
     }
 
-    private fun uploadPost() {
+    private fun getintroducedData() {
         val username = args.username
         val userImg = args.photoUrl
         val description = binding.txtPostDescription.text.toString()
-        // TODO: Permitir subir una imagen al servidor y guardar su url
-        val imageUrl = ""
-        // TODO: Permitir subir un archivo al servidor y guardar su url
-        val fileUrl = ""
         val date = "${LocalDateTime.now().dayOfMonth} - ${LocalDateTime.now().month} - ${LocalDateTime.now().year}"
         val time = "${LocalDateTime.now().hour}:${LocalDateTime.now().minute}"
+        val userId = FirebaseAuth.getInstance().currentUser!!.uid
+        val imgBool = !binding.btnAgregarImagen.isEnabled
+        val fileBool = !binding.btnAgregarArchivo.isEnabled
 
         if(description.isNotEmpty()) {
-            postviewmodel.uploadPost(username, userImg, description, imageUrl, fileUrl, date, time)
-                .observe(viewLifecycleOwner) { result ->
-                    when(result) {
-                        is Result.Loading -> binding.btnPublicar.disable()
-                        is Result.Success -> {
-                            binding.btnPublicar.enable()
-                            findNavController().popBackStack()
-                        }
-                        is Result.Failure -> {
-                            binding.btnPublicar.enable()
-                            Toast.makeText(
-                                requireContext(),
-                                "Error de conexion: ${result.exception}",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-                }
+            uploadPost(username, userImg, description, userId, date, time, imgBool, fileBool)
         }
         else {
             Toast.makeText(
@@ -98,5 +81,35 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    private fun uploadPost(username: String, userImg: String, description: String, userId: String, date: String, time: String, imgBool: Boolean, fileBool: Boolean) {
+        postviewmodel.uploadPost(username, userImg, description, userId, date, time, imgBool, fileBool)
+            .observe(viewLifecycleOwner) { result ->
+                when(result) {
+                    is Result.Loading -> binding.btnPublicar.disable()
+                    is Result.Success -> {
+                        if(imgBool) uploadImage(userId, result.data)
+                        if(fileBool) uploadFile(userId, result.data)
+                        findNavController().popBackStack()
+                    }
+                    is Result.Failure -> {
+                        binding.btnPublicar.enable()
+                        Toast.makeText(
+                            requireContext(),
+                            "Error de conexion: ${result.exception}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+    }
+
+    private fun uploadImage(userId: String, postId: String) {
+
+    }
+
+    private fun uploadFile(userId: String, postId: String) {
+
     }
 }
