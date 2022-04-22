@@ -3,6 +3,7 @@ package com.example.blogvyvds.data.remote.post
 import com.example.blogvyvds.core.Result
 import com.example.blogvyvds.data.model.Post
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.storage.FirebaseStorage
 
 class PostDataSource {
 
@@ -18,8 +19,8 @@ class PostDataSource {
     ) : Result<String> {
         val id = FirebaseDatabase.getInstance().reference.child("Post").push().key ?: ""
 
-        val imageUrl = if(imgBool) getImageUrl(userId) else ""
-        val fileUrl = if(fileBool) getFileUrl(userId) else ""
+        val imageUrl = if(imgBool) getImageUrl(userId, id) else ""
+        val fileUrl = if(fileBool) getFileUrl(userId, id) else ""
 
         val postResult = FirebaseDatabase
                 .getInstance()
@@ -30,11 +31,11 @@ class PostDataSource {
         return Result.Success(id)
     }
 
-    private fun getImageUrl(userId: String): String {
-        return ""
+    private fun getImageUrl(userId: String, postId: String): String {
+        return "${FirebaseStorage.getInstance().reference.path}/postImages/$userId/$postId"
     }
 
-    private fun getFileUrl(userId: String): String {
+    private fun getFileUrl(userId: String, postId: String): String {
         return ""
     }
 }
