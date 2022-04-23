@@ -1,14 +1,20 @@
 package com.example.blogvyvds.ui.home
 
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContract
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.example.blogvyvds.R
 import com.example.blogvyvds.core.*
 import com.example.blogvyvds.data.remote.file.FileDataSource
@@ -44,6 +50,8 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
         FileViewModelFactory(FileRepoImpl(FileDataSource()))
     }
     private val args by navArgs<CreatePostFragmentArgs>()
+    private var imageUri: Uri? = null
+    private var fileUri: Uri? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -53,28 +61,42 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
     }
 
     private fun setButtonListener() {
-        binding.btnAgregarArchivo.setOnClickListener {
-            binding.LinearLayoutFileDescription.let {
-                if(!it.isVisible()) {
-                    it.show()
-                    binding.txtNombreArchivoPreview.text = "Nombre del archivo"
-                }
-                else {
-                    it.hide()
-                    binding.txtNombreArchivoPreview.text = ""
-                }
-            }
+        binding.btnAgregarImagen.setOnClickListener {
+            getImage()
         }
 
-        binding.btnAgregarImagen.setOnClickListener {
-            if(binding.imgPreview.drawable == null) {
-                binding.imgPreview.setImageResource(R.drawable.img_agregar_imagen)
-            }
-            else binding.imgPreview.setImageDrawable(null)
+        binding.btnAgregarArchivo.setOnClickListener {
+            getFile()
         }
 
         binding.btnPublicar.setOnClickListener {
             getintroducedData()
+        }
+    }
+
+    private fun getImage() {
+        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        gallery.type = "image/*"
+        startActivityForResult(gallery, 0)
+    }
+
+    private fun getFile() {
+        val fileManager = Intent(Intent.ACTION_GET_CONTENT)
+        fileManager.type = "*/*"
+        startActivityForResult(fileManager, 1)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == RESULT_OK  &&  requestCode == 0) {
+            imageUri = data?.data
+            Glide.with(requireContext()).load(imageUri).centerCrop().into(binding.imgPreview)
+        }
+
+        if(resultCode == RESULT_OK  &&  requestCode == 1) {
+            fileUri = data?.data
+            binding.txtNombreArchivoPreview.text = fileUri?.getFileName(requireContext())
+            binding.LinearLayoutFileDescription.show()
         }
     }
 
@@ -85,8 +107,8 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
         val date = "${LocalDateTime.now().dayOfMonth} - ${LocalDateTime.now().month} - ${LocalDateTime.now().year}"
         val time = "${LocalDateTime.now().hour}:${LocalDateTime.now().minute}"
         val userId = FirebaseAuth.getInstance().currentUser!!.uid
-        val imgBool = !binding.btnAgregarImagen.isEnabled
-        val fileBool = !binding.btnAgregarArchivo.isEnabled
+        val imgBool = imageUri != null
+        val fileBool = fileUri != null
 
         if(description.isNotEmpty()) {
             uploadPost(username, userImg, description, userId, date, time, imgBool, fileBool)
@@ -106,8 +128,8 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
                 when(result) {
                     is Result.Loading -> binding.btnPublicar.disable()
                     is Result.Success -> {
-                        if(imgBool) uploadImage(userId, result.data)
-                        if(fileBool) uploadFile(userId, result.data)
+                        imageUri?.let { uploadImage(userId, result.data, it) }
+                        fileUri?.let { uploadFile(userId, result.data, it) }
                         findNavController().popBackStack()
                     }
                     is Result.Failure -> {
@@ -122,9 +144,8 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
             }
     }
 
-    private fun uploadImage(userId: String, postId: String) {
-        /*
-        imageviewmodel.uploadImage(userId, postId, Bitmap).observe(viewLifecycleOwner) { result ->
+    private fun uploadImage(userId: String, postId: String, imageUri: Uri) {
+        imageviewmodel.uploadImage(userId, postId, imageUri).observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Result.Loading -> {
                     Log.d("CreatePostFragment", "Cargando imagen en el servidor...")
@@ -137,12 +158,10 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
                 }
             }
         }
-        */
     }
 
-    private fun uploadFile(userId: String, postId: String) {
-        /*
-        fileviewmodel.uploadFile(userId, postId, File).observe(viewLifecycleOwner) { result ->
+    private fun uploadFile(userId: String, postId: String, fileUri: Uri) {
+        fileviewmodel.uploadFile(userId, postId, fileUri).observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Result.Loading -> {
                     Log.d("CreatePostFragment", "Cargando archivo en el servidor...")
@@ -155,6 +174,5 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
                 }
             }
         }
-        */
     }
 }

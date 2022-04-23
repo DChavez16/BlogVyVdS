@@ -1,6 +1,6 @@
 package com.example.blogvyvds.presentation.image
 
-import android.graphics.Bitmap
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
@@ -10,11 +10,11 @@ import kotlinx.coroutines.Dispatchers
 
 class ImageViewModel(private val repo: ImageRepo): ViewModel() {
 
-    fun uploadImage(userId: String, postId: String, imageBitmap: Bitmap) = liveData(Dispatchers.IO) {
+    fun uploadImage(userId: String, postId: String, imageUri: Uri) = liveData(Dispatchers.IO) {
         emit(Result.Loading())
 
         try {
-            emit(Result.Success(repo.uploadImage(userId, postId, imageBitmap)))
+            emit(Result.Success(repo.uploadImage(userId, postId, imageUri)))
         } catch (e: Exception) {
             emit(Result.Failure(e))
         }

@@ -1,22 +1,19 @@
 package com.example.blogvyvds.data.remote.image
 
-import android.graphics.Bitmap
+import android.net.Uri
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
-import java.io.ByteArrayOutputStream
 
 class ImageDataSource {
 
     suspend fun uploadImage(
         userId: String,
         postId: String,
-        imageBitmap: Bitmap
+        imageUri: Uri
     ) {
         val imageRef = FirebaseStorage.getInstance().reference.child("postImages/$userId/$postId")
-        val baos = ByteArrayOutputStream()
-        imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
 
-        imageRef.putBytes(baos.toByteArray()).await()
+        imageRef.putFile(imageUri).await()
     }
 
 }

@@ -36,6 +36,6 @@ class PostDataSource {
     }
 
     private fun getFileUrl(userId: String, postId: String): String {
-        return ""
+        return "${FirebaseStorage.getInstance().reference.path}/postFiles/$userId/$postId"
     }
 }
