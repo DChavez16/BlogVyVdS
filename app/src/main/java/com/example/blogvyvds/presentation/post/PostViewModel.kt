@@ -1,28 +1,32 @@
 package com.example.blogvyvds.presentation.post
 
-import android.util.Log
+import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.example.blogvyvds.core.Result
+import com.example.blogvyvds.data.model.Post
 import com.example.blogvyvds.domain.post.PostRepo
 import kotlinx.coroutines.Dispatchers
 
 class PostViewModel(private val repo: PostRepo): ViewModel() {
 
-    fun uploadPost(
-        userName: String,
-        userImg: String,
-        description: String,
-        userId: String,
-        date: String,
-        time: String,
-        imgBool: Boolean,
-        fileBool: Boolean
-    ) = liveData(Dispatchers.IO) {
+    fun uploadPost(post: Post, imageUri: Uri?, fileUri: Uri?, context: Context) = liveData(Dispatchers.IO) {
         emit(Result.Loading())
         try {
-            emit(repo.uploadPost(userName, userImg, description, userId, date, time, imgBool, fileBool))
+            emit(Result.Success(repo.uploadPost(post, imageUri, fileUri, context)))
+        } catch (e: Exception) {
+            emit(Result.Failure(e))
+        }
+    }
+
+    fun getPostList() = liveData(viewModelScope.coroutineContext + Dispatchers.IO) {
+        emit(Result.Loading())
+
+        try {
+            emit(Result.Success(repo.getPostList()))
         } catch (e: Exception) {
             emit(Result.Failure(e))
         }

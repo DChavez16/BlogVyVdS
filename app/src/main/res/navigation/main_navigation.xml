@@ -22,13 +22,16 @@
     <include app:graph="@navigation/login_navigation" />
     <fragment
         android:id="@+id/createPostFragment"
-        android:name="com.example.blogvyvds.ui.home.CreatePostFragment"
+        android:name="com.example.blogvyvds.ui.createPost.CreatePostFragment"
         android:label="fragment_create_post"
         tools:layout="@layout/fragment_create_post" >
         <argument android:name="username"
             app:argType="string" />
         <argument
             android:name="photo_url"
+            app:argType="string" />
+        <argument
+            android:name="userId"
             app:argType="string" />
     </fragment>
 </navigation>

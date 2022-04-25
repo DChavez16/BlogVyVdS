@@ -9,14 +9,21 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.blogvyvds.R
 import com.example.blogvyvds.core.Result
+import com.example.blogvyvds.core.hide
+import com.example.blogvyvds.core.show
 import com.example.blogvyvds.data.local.AppDatabase
 import com.example.blogvyvds.data.local.user.LocalUserDataSource
 import com.example.blogvyvds.data.model.User
+import com.example.blogvyvds.data.remote.post.PostDataSource
 import com.example.blogvyvds.data.remote.user.RemoteUserDataSource
 import com.example.blogvyvds.databinding.FragmentHomeBinding
+import com.example.blogvyvds.domain.post.PostRepoImpl
 import com.example.blogvyvds.domain.user.UserRepositoryImpl
+import com.example.blogvyvds.presentation.post.PostViewModel
+import com.example.blogvyvds.presentation.post.PostViewModelFactory
 import com.example.blogvyvds.presentation.user.UserViewModel
 import com.example.blogvyvds.presentation.user.UserViewModelFactory
+import com.example.blogvyvds.ui.home.adapter.HomeFragmentAdapter
 import com.google.firebase.auth.FirebaseAuth
 
 
@@ -31,6 +38,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             RemoteUserDataSource()
         ))
     }
+    private val postviewmodel by viewModels<PostViewModel> {
+        PostViewModelFactory(PostRepoImpl(PostDataSource()))
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -39,8 +49,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         loginVerification()
         setButtonListener()
         showUserData()
-
-        // TODO: Mostrar las publicaciones actuales
+        showPosts()
     }
 
     private fun loginVerification() {
@@ -59,7 +68,8 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         binding.btnCrearPublicacion.setOnClickListener {
             val action = HomeFragmentDirections.actionHomeFragmentToCreatePostFragment(
                 user.username,
-                user.photo_url
+                user.photo_url,
+                FirebaseAuth.getInstance().currentUser?.uid ?: ""
             )
 
             findNavController().navigate(action)
@@ -89,5 +99,30 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         })
+    }
+
+    private fun showPosts() {
+        postviewmodel.getPostList().observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Result.Loading -> {
+                    binding.progressBar.show()
+                }
+                is Result.Success -> {
+                    binding.progressBar.hide()
+                    if(result.data.isNotEmpty()) {
+                        binding.RVPosts.adapter = HomeFragmentAdapter(result.data)
+                        binding.RVPosts.show()
+                    } else {
+                        binding.txtPostContentMessage.text = "No hay post disponibles"
+                        binding.txtPostContentMessage.show()
+                    }
+                }
+                is Result.Failure -> {
+                    binding.progressBar.hide()
+                    binding.txtPostContentMessage.text = result.exception.toString()
+                    binding.txtPostContentMessage.show()
+                }
+            }
+        }
     }
 }

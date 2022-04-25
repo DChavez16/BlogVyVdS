@@ -113,7 +113,7 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
     }
 
     private fun getRemoteUserData(): User {
-        var user = User()
+        val user = User()
 
         userviewmodel.getRemoteUser().observe(viewLifecycleOwner, { result ->
             when(result) {
