@@ -42,13 +42,11 @@ class HomeFragmentAdapter(private val postList: List<Post>): RecyclerView.Adapte
             binding.txtPostDescription.text = item.description
 
             item.imageUrl?.let {
-                if(it.isNotEmpty()) Glide.with(context).load(it).centerCrop().into(binding.imgPostImage)
+                Glide.with(context).load(it).centerCrop().into(binding.imgPostImage)
             }
             item.fileUrl?.let {
-                if(it.isNotEmpty()) {
-                    binding.txtPostFileName.text = item.fileName
-                    binding.btnPostDescargarArchivo.show()
-                }
+                binding.txtPostFileName.text = item.fileName
+                binding.btnPostDescargarArchivo.show()
             }
         }
     }

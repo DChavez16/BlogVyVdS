@@ -1,5 +1,6 @@
 package com.example.blogvyvds.ui.auth
 
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -56,8 +57,9 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         val email = binding.txtRegistrarEmail.text.toString()
         val pass = binding.txtRegistrarPass.text.toString()
         val confirmPass = binding.txtRegistrarConfirmarPass.text.toString()
+        val defaultProfilePic = Uri.parse("android.resource://com.example.blogvyvds/drawable/img_default_profile_pic")
 
-        if(validateIntroducedData(username, email, pass, confirmPass)) createUser(username, email, pass)
+        if(validateIntroducedData(username, email, pass, confirmPass)) createUser(username, email, pass, defaultProfilePic)
     }
 
     private fun validateIntroducedData(username: String, email: String, pass: String, confirmPass: String): Boolean {
@@ -86,8 +88,8 @@ class RegisterFragment : Fragment(R.layout.fragment_register) {
         return validationResult
     }
 
-    private fun createUser(username: String, email: String, pass: String) {
-        authviewmodel.signUp(email, pass, username).observe(viewLifecycleOwner) { result ->
+    private fun createUser(username: String, email: String, pass: String, profilePicUri: Uri) {
+        authviewmodel.signUp(email, pass, username, profilePicUri).observe(viewLifecycleOwner) { result ->
             when(result) {
                 is Result.Loading -> {
                     binding.progressBar.show()

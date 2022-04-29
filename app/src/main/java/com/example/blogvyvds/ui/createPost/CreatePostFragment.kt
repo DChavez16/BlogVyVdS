@@ -86,6 +86,7 @@ class CreatePostFragment : Fragment(R.layout.fragment_create_post) {
         val username = args.username
         val userImg = args.photoUrl
         val description = binding.txtPostDescription.text.toString()
+        // TODO: Arreglar la obtencion de hora y fecha
         val date = "${LocalDateTime.now().dayOfMonth} - ${LocalDateTime.now().month} - ${LocalDateTime.now().year}"
         val time = "${LocalDateTime.now().hour}:${LocalDateTime.now().minute}"
 

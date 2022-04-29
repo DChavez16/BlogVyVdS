@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.example.blogvyvds.R
 import com.example.blogvyvds.core.Result
 import com.example.blogvyvds.core.hide
@@ -89,6 +90,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     Log.d("HomeFragment", "Datos del usuario mostrados correctamente")
                     user = result.data
                     binding.txtUserName.text = user.username
+                    Glide.with(requireContext()).load(user.photo_url).centerCrop().into(binding.imgUserPicture)
                 }
                 is Result.Failure -> {
                     Toast.makeText(
