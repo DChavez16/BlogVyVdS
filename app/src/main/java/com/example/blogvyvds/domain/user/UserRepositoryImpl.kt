@@ -1,5 +1,6 @@
 package com.example.blogvyvds.domain.user
 
+import android.net.Uri
 import android.util.Log
 import com.example.blogvyvds.data.local.user.LocalUserDataSource
 import com.example.blogvyvds.data.model.User
@@ -21,5 +22,9 @@ class UserRepositoryImpl(
 
     override suspend fun getRemoteUser(): User {
         return dataSourceRemote.getRemoteUser()
+    }
+
+    override suspend fun updateRemoteUser(user: User, profilePicUri: Uri): User {
+        return dataSourceRemote.updateRemoteUser(user, profilePicUri)
     }
 }

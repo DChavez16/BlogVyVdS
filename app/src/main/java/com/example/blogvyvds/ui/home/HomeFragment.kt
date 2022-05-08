@@ -1,6 +1,10 @@
 package com.example.blogvyvds.ui.home
 
+import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.View
@@ -10,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.blogvyvds.R
 import com.example.blogvyvds.core.Result
+import com.example.blogvyvds.core.getFileName
 import com.example.blogvyvds.core.hide
 import com.example.blogvyvds.core.show
 import com.example.blogvyvds.data.local.AppDatabase
@@ -50,7 +55,6 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
         loginVerification()
         setButtonListener()
         showUserData()
-        showPosts()
     }
 
     private fun loginVerification() {
@@ -76,7 +80,9 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
             findNavController().navigate(action)
         }
 
-        // TODO: Opcion para cambiar la imagen del usuario
+        binding.imgUserPicture.setOnClickListener {
+            getImage()
+        }
     }
 
     private fun showUserData() {
@@ -91,6 +97,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                     user = result.data
                     binding.txtUserName.text = user.username
                     Glide.with(requireContext()).load(user.photo_url).centerCrop().into(binding.imgUserPicture)
+                    showPosts()
                 }
                 is Result.Failure -> {
                     Toast.makeText(
@@ -126,5 +133,63 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                 }
             }
         }
+    }
+
+    private fun getImage() {
+        val gallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        gallery.type = "image/*"
+        startActivityForResult(gallery, 0)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(resultCode == Activity.RESULT_OK &&  requestCode == 0) {
+            data?.data?.let { updateUserData(it) }
+        }
+    }
+
+    private fun updateUserData(imageUri: Uri) {
+        userviewmodel.updateRemoteUser(user, imageUri).observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Result.Loading -> {
+                    binding.progressBar.show()
+                }
+                is Result.Success -> {
+                    binding.progressBar.hide()
+                    saveLocalUserData(result.data)
+                }
+                is Result.Failure -> {
+                    binding.progressBar.hide()
+                    Toast.makeText(
+                        requireContext(),
+                        "Error: ${result.exception}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        }
+    }
+
+    private fun saveLocalUserData(user: User) {
+        userviewmodel.saveUser(user).observe(viewLifecycleOwner, { result ->
+            when(result) {
+                is Result.Loading -> {
+                    Log.d("LiveData", "Guardando datos...")
+                }
+                is Result.Success -> {
+                    Log.d("LiveData", "Datos guardados")
+
+                    showUserData()
+                }
+                is Result.Failure -> {
+                    Log.d("LiveData", "Error al guardar datos: ${result.exception}")
+                    Toast.makeText(
+                        requireContext(),
+                        "Error: ${result.exception}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        })
     }
 }

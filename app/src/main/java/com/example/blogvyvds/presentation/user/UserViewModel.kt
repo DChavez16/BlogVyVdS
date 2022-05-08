@@ -1,5 +1,6 @@
 package com.example.blogvyvds.presentation.user
 
+import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -36,6 +37,16 @@ class UserViewModel(private val repo: UserRepository): ViewModel() {
 
         try {
             emit(Result.Success(repo.getRemoteUser()))
+        } catch (e: Exception) {
+            emit(Result.Failure(e))
+        }
+    }
+
+    fun updateRemoteUser(user: User, profilePicUri: Uri) = liveData(Dispatchers.IO) {
+        emit(Result.Loading())
+
+        try {
+            emit(Result.Success(repo.updateRemoteUser(user, profilePicUri)))
         } catch (e: Exception) {
             emit(Result.Failure(e))
         }

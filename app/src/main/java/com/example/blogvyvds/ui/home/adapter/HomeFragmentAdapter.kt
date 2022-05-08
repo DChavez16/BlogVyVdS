@@ -1,6 +1,9 @@
 package com.example.blogvyvds.ui.home.adapter
 
+import android.app.DownloadManager
 import android.content.Context
+import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,6 +15,8 @@ import com.example.blogvyvds.core.hide
 import com.example.blogvyvds.core.show
 import com.example.blogvyvds.data.model.Post
 import com.example.blogvyvds.databinding.PostItemBinding
+import java.nio.file.Files
+import java.nio.file.Paths
 
 class HomeFragmentAdapter(private val postList: List<Post>): RecyclerView.Adapter<BaseViewHolder<*>>() {
 
@@ -44,10 +49,27 @@ class HomeFragmentAdapter(private val postList: List<Post>): RecyclerView.Adapte
             item.imageUrl?.let {
                 Glide.with(context).load(it).centerCrop().into(binding.imgPostImage)
             }
-            item.fileUrl?.let {
+            item.fileUrl?.let { fileUrl ->
                 binding.txtPostFileName.text = item.fileName
                 binding.btnPostDescargarArchivo.show()
+                binding.btnPostDescargarArchivo.setOnClickListener {
+                    downloadFile(context, fileUrl, item.fileName!!)
+                }
             }
         }
+    }
+
+    private fun downloadFile(context: Context, fileUrl: String, fileName: String) {
+        val request = DownloadManager.Request(Uri.parse(fileUrl))
+            .setDescription("Descargando archivo $fileName")
+            .setTitle(fileName)
+            .setAllowedOverMetered(true)
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+
+        Log.d("Downloadfile", fileName)
+
+        val location = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        location.enqueue(request)
     }
 }
