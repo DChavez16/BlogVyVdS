@@ -5,7 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginVertical="5dp"
+    android:layout_marginHorizontal="10dp"
     android:paddingBottom="20dp"
+    android:paddingTop="5dp"
+    android:background="@color/background"
     android:orientation="vertical">
 
     <!-- Layout con la informacion del usuario de la publicacion -->
@@ -19,8 +22,7 @@
             android:id="@+id/imgPostUserPic"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginHorizontal="5dp"
-            android:background="@mipmap/ic_launcher_round" />
+            android:layout_marginHorizontal="5dp" />
 
         <TextView
             android:id="@+id/txtPostUserName"
@@ -28,6 +30,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center_vertical"
+            android:textColor="@color/white"
             android:textSize="16sp"/>
 
     </LinearLayout>
@@ -45,6 +48,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="5dp"
+            android:textColor="@color/white"
             android:textSize="14sp"/>
 
         <ImageView
@@ -67,13 +71,15 @@
             android:layout_marginHorizontal="20dp"
             android:layout_marginTop="5dp"
             android:background="@drawable/round_background"
+            android:backgroundTint="@color/app_orange"
             android:visibility="gone">
 
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 app:srcCompat="@android:drawable/stat_sys_download_done"
-                android:layout_marginEnd="5dp"/>
+                android:layout_marginEnd="5dp"
+                app:tint="@color/background"/>
 
             <TextView
                 android:id="@+id/txtPostFileName"
@@ -83,7 +89,7 @@
                 android:layout_weight="1"
                 android:maxLines="1"
                 android:textSize="14sp"
-                android:textColor="@color/white"/>
+                android:textColor="@color/black"/>
         </LinearLayout>
     </LinearLayout>
 
@@ -103,6 +109,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="textStart"
             android:layout_weight=".5"
+            android:textColor="@color/white"
             android:textSize="14sp"/>
 
         <TextView
@@ -111,6 +118,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="textEnd"
             android:layout_weight=".5"
+            android:textColor="@color/white"
             android:textSize="14sp"/>
     </LinearLayout>
 </LinearLayout>

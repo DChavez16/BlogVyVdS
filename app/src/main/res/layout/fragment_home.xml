@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/clear_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.home.HomeFragment"
@@ -12,7 +13,7 @@
         android:id="@+id/linearLayoutHeader"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="@color/teal_700"
+        android:background="@color/background"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,8 +23,7 @@
             android:id="@+id/imgUserPicture"
             android:layout_width="45dp"
             android:layout_height="45dp"
-            android:padding="2dp"
-            android:src="@mipmap/ic_launcher_round" />
+            android:padding="2dp" />
 
         <TextView
             android:id="@+id/txtUserName"
@@ -60,7 +60,6 @@
             android:id="@+id/RVPosts"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginHorizontal="10dp"
             tools:listitem="@layout/post_item"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:visibility="gone"

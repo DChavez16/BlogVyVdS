@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/clear_background"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.createPost.CreatePostFragment">
@@ -11,7 +12,7 @@
         android:id="@+id/linearLayoutHeader"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"
-        android:background="@color/teal_700"
+        android:background="@color/background"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -56,10 +57,13 @@
         <EditText
             android:id="@+id/txtPostDescription"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/white"
             android:gravity="top"
             android:hint="Descripcion"
+            android:textColorHint="@color/white"
             android:maxHeight="200dp" />
 
         <ImageButton
@@ -70,7 +74,7 @@
             android:background="#00FFFFFF"
             android:scaleType="fitXY"
             android:src="@android:drawable/ic_menu_send"
-            app:tint="@color/teal_700" />
+            app:tint="@color/app_orange" />
     </LinearLayout>
 
     <!-- Layout de la descripcion del archivo seleccionado -->
@@ -89,7 +93,8 @@
             android:id="@+id/imgArchivoPreview"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            app:srcCompat="@drawable/img_archivo_preview" />
+            app:srcCompat="@drawable/img_archivo_preview"
+            app:tint="@color/white" />
 
         <TextView
             android:id="@+id/txtNombreArchivoPreview"
@@ -119,6 +124,7 @@
             android:layout_margin="10dp"
             android:layout_weight=".5"
             android:background="@drawable/round_background"
+            android:backgroundTint="@color/app_orange"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -148,6 +154,7 @@
             android:layout_margin="10dp"
             android:layout_weight=".5"
             android:background="@drawable/round_background"
+            android:backgroundTint="@color/app_orange"
             android:gravity="center"
             android:orientation="vertical">
 
