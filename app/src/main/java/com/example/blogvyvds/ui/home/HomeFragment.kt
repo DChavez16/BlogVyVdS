@@ -122,7 +122,7 @@ class HomeFragment : Fragment(R.layout.fragment_home) {
                         binding.RVPosts.adapter = HomeFragmentAdapter(result.data)
                         binding.RVPosts.show()
                     } else {
-                        binding.txtPostContentMessage.text = "No hay post disponibles"
+                        binding.txtPostContentMessage.text = "No hay publicaciones disponibles"
                         binding.txtPostContentMessage.show()
                     }
                 }
